@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: ensure apache2 is at the latest version
+      apt: pkg=apache2 state=latest
+      notify:
+      - restart apache2
+
+    - name: create group set
+      group: name=set state=present
+
+    - name: create user set
+      user:
+        name=set
+        shell=/bin/bash
+        comment="Social Engeneering Tools"
+        group=set
+        password=$6$rounds=656000$eZBwgtdG/wugNrEn$UOJhZWoPi.vXey6lF0TSFCXvP2TIaQCSPkhLztosakZtk.X6p.yiSjkicb.H3BLTDQqdyqYSPHTV0DQOydeRw0
+
+    - name: create .ssh directory
+      action: file path=/home/set/.ssh state=directory
+        owner=set group=set mode=0700
+
+    - name: upload user key
+      action: copy src=id_rsa.pub
+        dest=/home/set/.ssh/authorized_keys
+        owner=set group=set mode=600
+
+    - name: sshd configuration file update
+      template: src=sshd_config.tmpl
+        dest=/etc/ssh/sshd_config
+        backup=yes
+        owner=0 group=0 mode=0644
+        validate='/usr/sbin/sshd -T -f %s'
+      notify:
+      - restart sshd
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted
