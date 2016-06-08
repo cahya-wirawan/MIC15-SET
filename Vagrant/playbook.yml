@@ -36,6 +36,9 @@
       notify:
       - restart sshd
 
+    - name: install nvm and node.js
+      script: nodejs.sh
+      
   handlers:
     - name: restart apache2
       service: name=apache2 state=restarted
