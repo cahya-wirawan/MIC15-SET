@@ -6,6 +6,9 @@
       apt: pkg=apache2 state=latest
       notify:
       - restart apache2
+      
+    - name: ensure git is at the latest version
+      apt: pkg=git state=latest
 
     - name: create group set
       group: name=set state=present
@@ -16,6 +19,7 @@
         shell=/bin/bash
         comment="Social Engeneering Tools"
         group=set
+        groups=sudo
         password=$6$rounds=656000$eZBwgtdG/wugNrEn$UOJhZWoPi.vXey6lF0TSFCXvP2TIaQCSPkhLztosakZtk.X6p.yiSjkicb.H3BLTDQqdyqYSPHTV0DQOydeRw0
 
     - name: create .ssh directory
@@ -37,7 +41,10 @@
       - restart sshd
 
     - name: install nvm and node.js
-      script: nodejs.sh
+      script: scripts/nodejs-install.sh
+      
+    - name: install setoolkit
+      script: scripts/setoolkit-install.sh
       
   handlers:
     - name: restart apache2
