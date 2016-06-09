@@ -125,7 +125,7 @@ setup_msf ()
   sed -i "s/__________________________________/$1/g" $3/config/database.yml
   sed -i "s/___________________________/$2/g" $3/config/database.yml
   echo "export MSF_DATABASE_CONFIG=$3/config/database.yml" >> /etc/profile.d/msf.sh
-  source ~/.bash_profile
+  source /etc/profile.d/msf.sh
 }
 #----------------------------------------------------------------------------------------------------------------------
 setup_veil()
